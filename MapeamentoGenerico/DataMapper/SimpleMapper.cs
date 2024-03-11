@@ -22,6 +22,21 @@ public static class SimpleMapper
         return target;
     }
 
+    public static IEnumerable<U> Map<U>(IEnumerable<object> sourceList) where U : class, new()
+    {
+        if (sourceList == null)
+            throw new ArgumentNullException(nameof(sourceList));
+
+        var targetType = typeof(U);
+
+        return sourceList.Select(source =>
+        {
+            var target = new U();
+            Map(source, target, mapper.GetMapping(source.GetType(), targetType));
+            return target;
+        });
+    }
+
     public static void Map(object source, object target, IEnumerable<Mapping> mappings)
     {
         if (source == null)
